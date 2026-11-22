@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conti 2027</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f6b73">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#eef2f4;--surface:#fff;--ink:#14272e;--muted:#5d727b;--line:#cfdadf;--accent:#0f6b73;--accent-ink:#fff;--sel:#d6eef0;--err:#b3261e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1b20;--surface:#172a31;--ink:#e6f0f2;--muted:#93aab2;--line:#2b434c;--accent:#4cc3cc;--accent-ink:#06262a;--sel:#1d4a50;--err:#ff8a80}}
+:root[data-theme="dark"]{--bg:#0f1b20;--surface:#172a31;--ink:#e6f0f2;--muted:#93aab2;--line:#2b434c;--accent:#4cc3cc;--accent-ink:#06262a;--sel:#1d4a50;--err:#ff8a80}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.5rem;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 20px}
+fieldset{border:1.5px solid var(--line);border-radius:10px;background:var(--surface);margin:0 0 16px;padding:6px 14px 10px}
+legend{font-weight:700;font-size:1.05rem;padding:0 6px}
+.opts{display:flex;flex-direction:column;gap:2px}
+.opts label{position:relative}
+.opts input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.opts span{display:flex;align-items:center;gap:12px;padding:8px 6px;min-height:44px;border-radius:8px}.opts span::before{content:"";width:18px;height:18px;border-radius:50%;border:2px solid var(--ink);flex:none}
+.opts input:checked+span{background:var(--sel);font-weight:650}.opts input:checked+span::before{border-color:var(--accent);background:radial-gradient(circle,var(--accent) 0 45%,transparent 50%)}
+.opts input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.field label{display:block;font-weight:650;margin-bottom:6px}
+input[type=date],input[type=number],input[type=text]{width:100%;min-height:46px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+input[type=date]:focus,input[type=number]:focus,input[type=text]:focus{outline:3px solid var(--accent);outline-offset:1px}
+.full{margin-bottom:18px}
+.altro{margin-top:8px}
+.msg{color:var(--err);min-height:1.4em;margin:0 0 8px}
+button{font:inherit;min-height:46px;padding:0 18px;border-radius:10px;border:1.5px solid var(--accent);cursor:pointer}
+.primary{background:var(--accent);color:var(--accent-ink);font-weight:650;width:100%}
+.ghost{background:transparent;color:var(--accent)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h2{font-size:1.15rem;margin:32px 0 10px}
+.tw{overflow-x:auto;border:1.5px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:.92rem}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:600}
+td.n{text-align:right}
+tr:last-child td{border-bottom:0}
+.x{min-height:32px;padding:0 10px;border-color:var(--line);color:var(--muted);background:transparent}
+.bar{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.bar button{flex:1}
+.empty{color:var(--muted);padding:14px}
+.ok{color:var(--accent);min-height:1.4em;margin:8px 0 0}
+.st{color:var(--muted);margin:0 0 14px}.bar2{display:flex;gap:10px;flex-wrap:wrap}.bar2 button{flex:1}
+</style>
+</head>
+<body>
+<main>
+<h1>Nuovo movimento</h1>
+<p class="st" id="st">Controllo l'accesso…</p>
+<div class="bar2" style="margin-bottom:18px"><button class="ghost" id="login" type="button" style="display:none">Accedi con Microsoft</button></div>
+<form id="f" onsubmit="return false">
+<fieldset><legend>Conto</legend><div class="opts" id="g-conto"></div></fieldset>
+<fieldset><legend>Modalità</legend><div class="opts" id="g-modalita"></div></fieldset>
+<fieldset><legend>Categoria</legend><div class="opts" id="g-categoria"></div></fieldset>
+<fieldset><legend>Dove</legend><div class="opts" id="g-dove"></div>
+<div class="altro"><input type="text" id="dove-altro" placeholder="Altro luogo (se non è in elenco)" aria-label="Altro luogo"></div></fieldset>
+<fieldset><legend>Chi</legend><div class="opts" id="g-chi"></div></fieldset>
+
+<div class="row">
+<div class="field"><label for="data">Data</label><input type="date" id="data"></div>
+<div class="field"><label for="cifra">Cifra (€)</label><input type="number" id="cifra" step="0.01" inputmode="decimal" placeholder="0,00"></div>
+</div>
+<div class="full field"><label for="desc">Descrizione</label><input type="text" id="desc" autocomplete="off"></div>
+
+<p class="msg" id="msg" role="alert"></p>
+<div class="bar2"><button class="primary" id="send" type="button">Invia a Excel</button><button class="ghost" id="mem" type="button">Salva in memoria</button></div>
+<h2>In memoria su questo computer</h2>
+<div class="tw" id="tw"></div>
+<div class="bar"><button class="primary" id="flush" type="button" style="width:auto">Scarica in Excel</button><button class="ghost" id="clear" type="button">Svuota memoria</button></div>
+<p class="ok" id="ok" role="status"></p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@3.27.0/lib/msal-browser.min.js"></script>
+<script>
+// ===== CONFIGURAZIONE =====
+var CFG={clientId:"INCOLLA-QUI-ID-APPLICAZIONE",file:"CONTI/conti_2027.xlsx",table:"Movimenti"};
+var LISTE={
+ conto:["Isybank Carmen","Isybank Vale","SWQ Principale","RVLT Carmen","RVLT Vale","Contante Carmen","Contante Vale"],
+ modalita:["Bonifico","Bancomat","Carta debito"],
+ categoria:["Cibo","Utenze casa","Casa","Mutuo","Corsi Vale","Viaggi","Automobile Manutenzione","Automobile Gestione","Moto Manutenzione","Moto Gestione"],
+ dove:["a","b","c","d"],
+ chi:["Vale","Carmen","Comune"]
+};
+// ==========================
+var SCOPES=["Files.ReadWrite"],KEY="conti2027_memoria",mem=[],pca=null,acc=null;
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+Object.keys(LISTE).forEach(function(k){
+  var h="";LISTE[k].forEach(function(v){h+='<label><input type="radio" name="'+k+'" value="'+esc(v).replace(/"/g,"&quot;")+'"><span>'+esc(v)+'</span></label>'});
+  $("g-"+k).innerHTML=h;
+});
+$("dove-altro").addEventListener("input",function(){if(this.value)document.querySelectorAll('input[name=dove]').forEach(function(r){r.checked=false})});
+document.querySelectorAll('input[name=dove]').forEach(function(r){r.addEventListener("change",function(){$("dove-altro").value=""})});
+function oggi(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+$("data").value=oggi();
+function val(k){var r=document.querySelector('input[name='+k+']:checked');return r?r.value:""}
+function fmtData(iso){var p=iso.split("-");return p[2]+"/"+p[1]+"/"+p[0]}
+function fmtCifra(n){return n.toFixed(2).replace(".",",")}
+function serial(iso){var p=iso.split("-");return Math.round(Date.UTC(+p[0],+p[1]-1,+p[2])/86400000)+25569}
+try{mem=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){mem=[]}
+function salva(){try{localStorage.setItem(KEY,JSON.stringify(mem))}catch(e){}}
+function disegna(){
+  if(!mem.length){$("tw").innerHTML='<div class="empty">Memoria vuota.</div>';return}
+  var h='<table><thead><tr><th>Conto</th><th>Modalità</th><th>Categoria</th><th>Data</th><th>Dove</th><th>Descrizione</th><th style="text-align:right">Cifra</th><th>Chi</th><th></th></tr></thead><tbody>';
+  mem.forEach(function(r,i){h+='<tr><td>'+esc(r.conto)+'</td><td>'+esc(r.modalita)+'</td><td>'+esc(r.categoria)+'</td><td>'+fmtData(r.data)+'</td><td>'+esc(r.dove)+'</td><td>'+esc(r.desc)+'</td><td class="n">'+fmtCifra(r.cifra)+' €</td><td>'+esc(r.chi)+'</td><td><button class="x" data-i="'+i+'">Elimina</button></td></tr>'});
+  $("tw").innerHTML=h+'</tbody></table>';
+}
+$("tw").addEventListener("click",function(e){var b=e.target.closest("button[data-i]");if(!b)return;mem.splice(+b.getAttribute("data-i"),1);salva();disegna()});
+function leggi(){
+  var dove=$("dove-altro").value.trim()||val("dove"),cifra=parseFloat($("cifra").value),m=[];
+  if(!val("conto"))m.push("Conto");if(!val("modalita"))m.push("Modalità");if(!val("categoria"))m.push("Categoria");
+  if(!$("data").value)m.push("Data");if(!dove)m.push("Dove");if(isNaN(cifra))m.push("Cifra");if(!val("chi"))m.push("Chi");
+  if(m.length){$("msg").textContent="Manca: "+m.join(", ")+".";return null}
+  $("msg").textContent="";
+  return {conto:val("conto"),modalita:val("modalita"),categoria:val("categoria"),data:$("data").value,dove:dove,desc:$("desc").value.trim().replace(/[\t\r\n]+/g," "),cifra:cifra,chi:val("chi")};
+}
+function azzera(){
+  $("cifra").value="";$("desc").value="";$("dove-altro").value="";
+  document.querySelectorAll('input[name=categoria],input[name=dove]').forEach(function(r){r.checked=false});
+}
+function valori(r){return [r.conto,r.modalita,r.categoria,serial(r.data),r.dove,r.desc,r.cifra,r.chi]}
+// ---- Microsoft ----
+async function token(){
+  var r=await pca.acquireTokenSilent({scopes:SCOPES,account:acc}).catch(function(){return null});
+  if(!r){await pca.acquireTokenRedirect({scopes:SCOPES,account:acc});return null}
+  return r.accessToken;
+}
+async function invia(righe){
+  if(!acc)throw new Error("Accedi prima con Microsoft.");
+  var t=await token();if(!t)return;
+  var url="https://graph.microsoft.com/v1.0/me/drive/root:/"+encodeURI(CFG.file)+":/workbook/tables/"+encodeURIComponent(CFG.table)+"/rows/add";
+  var res=await fetch(url,{method:"POST",headers:{"Authorization":"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify({values:righe.map(valori)})});
+  if(!res.ok){var m="";try{m=(await res.json()).error.message}catch(e){}throw new Error("Excel ha risposto "+res.status+(m?": "+m:""))}
+}
+$("send").addEventListener("click",async function(){
+  var r=leggi();if(!r)return;
+  $("ok").textContent="Invio in corso…";
+  try{await invia([r]);$("ok").textContent="Riga inviata a Excel.";azzera()}
+  catch(e){mem.push(r);salva();disegna();azzera();$("ok").textContent="Non inviata, messa in memoria. "+e.message}
+});
+$("mem").addEventListener("click",function(){var r=leggi();if(!r)return;mem.push(r);salva();disegna();azzera();$("ok").textContent="Riga messa in memoria."});
+$("flush").addEventListener("click",async function(){
+  if(!mem.length){$("ok").textContent="La memoria è vuota.";return}
+  $("ok").textContent="Invio di "+mem.length+" righe…";
+  try{var n=mem.length;await invia(mem);mem=[];salva();disegna();$("ok").textContent=n+" righe inviate a Excel."}
+  catch(e){$("ok").textContent="Non inviate, restano in memoria. "+e.message}
+});
+$("clear").addEventListener("click",function(){if(mem.length&&confirm("Svuotare la memoria? Le righe non ancora inviate andranno perse.")){mem=[];salva();disegna()}});
+$("login").addEventListener("click",function(){pca.loginRedirect({scopes:SCOPES})});
+(async function(){
+  disegna();
+  if(CFG.clientId.indexOf("INCOLLA")===0){$("st").textContent="Manca l'ID applicazione Microsoft nella configurazione.";return}
+  try{
+    pca=new msal.PublicClientApplication({auth:{clientId:CFG.clientId,authority:"https://login.microsoftonline.com/consumers",redirectUri:location.origin+location.pathname},cache:{cacheLocation:"localStorage"}});
+    await pca.initialize();
+    var r=await pca.handleRedirectPromise();
+    acc=(r&&r.account)||pca.getAllAccounts()[0]||null;
+    if(acc){$("st").textContent="Collegato come "+acc.username+".";}
+    else{$("st").textContent="Non hai ancora effettuato l'accesso.";$("login").style.display=""}
+  }catch(e){$("st").textContent="Errore di accesso: "+e.message}
+})();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
+</script>
+</body>
+</html>
